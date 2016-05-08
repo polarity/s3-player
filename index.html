@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<script type="text/javascript" src="https://code.jquery.com/jquery-2.2.2.js"></script>
+		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.1.1/normalize.min.css">
+		<style type="text/css">
+			body {
+				font-family: sans-serif;
+				color: #0f0f0f;
+			}
+			
+			.list {
+				margin-bottom: 10px;
+			}
+			
+			.audio-item {
+				padding: 10px;
+				border: 1px solid #0f0f0f;
+				cursor: pointer;
+				margin-bottom: 2px;
+			}
+			
+			audio {
+				position: fixed;
+				bottom: 0;
+				width: 100%;
+			}
+		</style>
+
+		<title>Polarity S3 Cloud Player by scriptshit</title>
+		<script type='text/javascript'>
+
+		//<![CDATA[
+		window.onload = function() {
+			var BUCKET = "https://polaritymusic.s3.amazonaws.com/";
+
+			// play this!
+			var playFilename = function(filename) {
+				var url = BUCKET + filename;
+				console.log("play this: ", url);
+				var audio = $("audio");
+				$("audio > source").attr("src", url);
+				audio[0].pause();
+				audio[0].load();
+				audio[0].play();
+			};
+
+			// append a item to the list
+			var appendList = function(filename) {
+				var item = $("<div class='audio-item'>" + filename + "</div>");
+				item.on("click", playFilename.bind(null, filename));
+				$(".list").append(item);
+			};
+
+			// ajax the aws bucket
+			var loadList = function() {
+				$.ajax({
+					type: "GET",
+					url: BUCKET
+				}).done(function(data, status, xhr) {
+					$(data).find("Contents").each(function(item) {
+						var filename = $(this).find('Key').text();
+						appendList(filename);
+					});
+				});
+			};
+
+			// start the app!
+			loadList();
+
+		}; //]]>
+		</script>
+	</head>
+
+	<body>
+		<div class="list"></div>
+		<audio controls>
+			<source src="" type="audio/mp3">
+		</audio>
+	</body>
+
+</html>
