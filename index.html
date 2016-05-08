@@ -63,15 +63,31 @@
 					type: "GET",
 					url: BUCKET
 				}).done(function(data, status, xhr) {
+					var files = [];
+
+					// traverse xml and collect files
 					$(data).find("Contents").each(function(item) {
 						var filename = $(this).find('Key').text();
-
+						var modified = $(this).find('LastModified').text();
 						// only add mp3 files :)
-						if(filename.match(/.mp3/).length){
-							appendList(filename);
+						if(filename.match(/.mp3/)){
+							files.push({
+								modified: modified,
+								filename: filename
+							});
 						}
-
 					});
+
+					// sort files by date
+					files.sort(function(a,b){
+						return new Date(b.modified) - new Date(a.modified);
+					});
+					// build dom list
+					$.each(files, function(index, file){
+						console.log(file.filename);
+						appendList(file.filename);
+					});
+
 				});
 			};
 
