@@ -65,7 +65,12 @@
 				}).done(function(data, status, xhr) {
 					$(data).find("Contents").each(function(item) {
 						var filename = $(this).find('Key').text();
-						appendList(filename);
+
+						// only add mp3 files :)
+						if(filename.match(/.mp3/).length){
+							appendList(filename);
+						}
+
 					});
 				});
 			};
