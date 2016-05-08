@@ -21,7 +21,9 @@
 				cursor: pointer;
 				margin-bottom: 2px;
 			}
-			
+			.audio-item.active {
+				color: green;
+			}
 			audio {
 				position: fixed;
 				bottom: 0;
@@ -38,6 +40,8 @@
 
 			// play this!
 			var playFilename = function(filename) {
+				$(".audio-item").removeClass("active");
+				$(this).addClass("active");
 				var url = BUCKET + filename;
 				console.log("play this: ", url);
 				var audio = $("audio");
